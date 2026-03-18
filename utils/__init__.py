@@ -13,6 +13,7 @@ from langchain_groq import ChatGroq
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_tavily import TavilySearch
 from dotenv import load_dotenv
+import os 
 load_dotenv()
 # ─────────────────────────────────────────────
 # LLM  (single shared instance)
@@ -20,8 +21,13 @@ load_dotenv()
 # ChatOpenAI wraps the OpenAI API.
 # gpt-4.1-mini: fast + cheap — good for structured outputs.
 # swap model="gpt-4o" for higher quality if budget allows.
-llm = ChatGroq(model_name="openai/gpt-oss-120b")
-# llm = ChatGroq(model="llama-3.1-8b-instant")
+llm = ChatGroq(model_name="moonshotai/kimi-k2-instruct-0905")
+llm_router = ChatGroq(model_name="openai/gpt-oss-120b", max_tokens=900)
+llm_orchestrator = ChatGroq(
+    model_name="llama-3.3-70b-versatile",  # 12K TPM, better reasoning
+    max_tokens=900,
+)
+llm_researcher = ChatGroq(model_name="openai/gpt-oss-20b")
 
 # ─────────────────────────────────────────────
 # WEB SEARCH helper
@@ -34,7 +40,7 @@ def tavily_search(query: str, max_results: int = 5) -> List[dict]:
     Why normalize? Tavily's raw response has inconsistent field names
     across result types; normalizing makes the research_node simpler.
     """
-    tool = TavilySearch(max_results=max_results)
+    tool = TavilySearch(max_results=max_results,api_key=os.getenv("TAVILY_API_KEY"))
     results = tool.invoke({"query": query})
 
 

@@ -17,7 +17,7 @@ from __future__ import annotations
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from schemas import State, RouterDecision
-from utils import llm
+from utils import llm_router
 
 
 # ─────────────────────────────────────────────
@@ -56,7 +56,7 @@ def router_node(state: State) -> dict:
     to return a JSON object that matches the RouterDecision Pydantic schema.
     No manual JSON parsing needed!
     """
-    decider = llm.with_structured_output(RouterDecision)
+    decider = llm_router.with_structured_output(RouterDecision)
 
     decision: RouterDecision = decider.invoke([
         SystemMessage(content=ROUTER_SYSTEM),

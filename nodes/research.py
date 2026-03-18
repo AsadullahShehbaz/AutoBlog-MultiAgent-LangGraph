@@ -18,7 +18,7 @@ from typing import List
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from schemas import State, EvidenceItem, EvidencePack
-from utils import llm, tavily_search, iso_to_date
+from utils import llm_researcher, tavily_search, iso_to_date
 
 
 # ─────────────────────────────────────────────
@@ -63,7 +63,7 @@ def research_node(state: State) -> dict:
         return {"evidence": []}
 
     # ② Ask LLM to normalize & deduplicate
-    extractor = llm.with_structured_output(EvidencePack)
+    extractor = llm_researcher.with_structured_output(EvidencePack)
     pack: EvidencePack = extractor.invoke([
         SystemMessage(content=RESEARCH_SYSTEM),
         HumanMessage(content=(

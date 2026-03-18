@@ -16,7 +16,7 @@ from __future__ import annotations
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from schemas import State, Plan
-from utils import llm
+from utils import llm_orchestrator
 
 
 # ─────────────────────────────────────────────
@@ -59,7 +59,7 @@ def orchestrator_node(state: State) -> dict:
 
     The plan becomes the "task list" that fanout() sends to workers.
     """
-    planner = llm.with_structured_output(Plan)
+    planner = llm_orchestrator.with_structured_output(Plan)
     mode     = state.get("mode", "closed_book")
     evidence = state.get("evidence", [])
 
